@@ -9,8 +9,6 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core';
 
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
-
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
   email: varchar('email', { length: 255 }).notNull().unique(),
@@ -96,16 +94,10 @@ export const habitTagsRelations = relations(habitTags, ({ one }) => ({
 }));
 
 export type User = typeof users.$inferSelect;
+export type NewUser = typeof users.$inferInsert;
+
 export type Habit = typeof habits.$inferSelect;
+export type NewHabit = typeof habits.$inferInsert;
 export type Entry = typeof entries.$inferSelect;
 export type Tag = typeof tags.$inferSelect;
 export type HabitTag = typeof habitTags.$inferSelect;
-
-export const insertUserSchema = createInsertSchema(users);
-export const selectUserSchema = createSelectSchema(users);
-
-export const insertHabitSchema = createInsertSchema(habits);
-export const selectHabitSchema = createSelectSchema(habits);
-
-export const insertEntrySchema = createInsertSchema(entries);
-export const selectEntrySchema = createSelectSchema(entries);

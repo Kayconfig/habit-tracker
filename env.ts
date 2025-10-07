@@ -1,4 +1,5 @@
 import { env as loadEnv } from 'custom-env';
+import 'dotenv/config';
 import { z } from 'zod';
 
 const production = 'production';
@@ -22,8 +23,9 @@ const envVariablesSchema = z.object({
   PORT: z.coerce.number().positive().default(3000),
   DATABASE_URL: z.string().startsWith('postgresql://'),
   JWT_SECRET: z.string().min(32, 'Must be 32 characters long'),
-  JWT_EXPIRES_IN: z.string().default('7d'),
+  JWT_ACCESS_TOKEN_EXPIRES_IN: z.string().default('7d'),
   BCRYPT_ROUNDS: z.coerce.number().min(10).max(20).default(12),
+  ISSUER: z.string().nonempty('ISSUER cannot be empty'),
 });
 
 export type Env = z.infer<typeof envVariablesSchema>;
@@ -38,15 +40,13 @@ export function getEnv(key: keyof Env) {
   return env[key];
 }
 
-export function initializeEnv(data: Record<string, unknown>) {
-  const parseResult = envVariablesSchema.safeParse(data);
-  if (parseResult.error) {
-    console.error('\n\n\nerror: environment variables issues');
-    const { properties } = z.treeifyError(parseResult.error);
-    console.error(JSON.stringify(properties, null, 2));
-    console.error('\n\n\n');
+const parseResult = envVariablesSchema.safeParse(process.env);
+if (parseResult.error) {
+  console.error('\n\n\nerror: environment variables issues');
+  const { properties } = z.treeifyError(parseResult.error);
+  console.error(JSON.stringify(properties, null, 2));
+  console.error('\n\n\n');
 
-    process.exit(1);
-  }
-  env = parseResult.data;
+  process.exit(1);
 }
+env = parseResult.data;
