@@ -1,4 +1,5 @@
 import type { User } from '../../db/schema.ts';
+import { getEnv } from '../../env/index.ts';
 import type { UserService } from '../../user/interfaces/user-service.ts';
 import { userService } from '../../user/v1/user-service.ts';
 import { PasswordMismatchError } from '../errors/password-mismatch.ts';
@@ -15,11 +16,15 @@ async function generateAccessToken(
   user: User,
   jwtService: JwtService
 ): Promise<string> {
-  return await jwtService.signAccessToken({
-    sub: user.id,
-    email: user.email,
-    username: user.username,
-  });
+  const accessTokenExpiresIn = getEnv<string>('JWT_ACCESS_TOKEN_EXPIRES_IN');
+  return await jwtService.sign(
+    {
+      sub: user.id,
+      email: user.email,
+      username: user.username,
+    },
+    accessTokenExpiresIn
+  );
 }
 
 function createAuthService(
@@ -28,6 +33,8 @@ function createAuthService(
   jwtService: JwtService
 ) {
   return {
+    name: true,
+    speak: () => console.log(),
     async register(registerDto: RegisterDto): Promise<RegisterResponse> {
       registerDto.password = await hashingService.hash(registerDto.password);
       const createdUser = await userService.create(registerDto);

@@ -7,10 +7,8 @@ import express, {
 } from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import { isTest } from '../env.ts';
-import { authRouter } from './auth/v1/auth-routes.ts';
-import habitRouter from './habit/v1/habit-routes.ts';
-import userRoutes from './user/v1/user-routes.ts';
+import { isTest } from './env/index.ts';
+import v1Router from './router/v1-router.ts';
 import { timestamp } from './utils/timestamps.ts';
 
 export const app = express();
@@ -36,9 +34,7 @@ app.get('/health', (req, res) => {
 });
 
 // register routes
-app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/habit', habitRouter);
-app.use('/api/v1/user', userRoutes);
+app.use('/api/v1', v1Router);
 
 // unhandled routes
 app.use('/', (req, res) => {

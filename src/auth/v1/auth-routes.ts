@@ -17,3 +17,5 @@ authRouter.post(
   validateBody(registerSchema),
   asyncHandler(authController.register)
 );
+
+export default authRouter;

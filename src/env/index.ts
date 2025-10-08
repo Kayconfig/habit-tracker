@@ -1,6 +1,8 @@
 import { env as loadEnv } from 'custom-env';
 import 'dotenv/config';
 import { z } from 'zod';
+import { EnvNotSetError } from './errors/env-not-set.error.ts';
+import { InvalidEnvValueError } from './errors/invalid-env-value.error.ts';
 
 const production = 'production';
 const development = 'development';
@@ -32,12 +34,15 @@ export type Env = z.infer<typeof envVariablesSchema>;
 
 let env: Env | null = null;
 
-export function getEnv(key: keyof Env) {
+export function getEnv<T>(key: keyof Env): T {
   if (!env) {
-    console.error('Environment variable not set');
-    process.exit(1);
+    throw EnvNotSetError.create();
   }
-  return env[key];
+  const envValue = env[key];
+  if (envValue === null || envValue === undefined) {
+    throw InvalidEnvValueError.create(key);
+  }
+  return env[key] as T;
 }
 
 const parseResult = envVariablesSchema.safeParse(process.env);

@@ -1,7 +1,8 @@
 import type { Request, Response } from 'express';
+import type { AuthenticatedRequest } from '../../interfaces/auth/authenticated-request.interface.ts';
 
 export const userController = {
-  findById(req: Request, res: Response) {
+  findById(req: AuthenticatedRequest, res: Response) {
     res.json({ message: `user found with id: ${req.params.id}` });
     return;
   },

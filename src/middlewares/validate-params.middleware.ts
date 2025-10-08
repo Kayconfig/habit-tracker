@@ -19,7 +19,7 @@ export function validateParams(schema: ZodType) {
         });
         return;
       }
-      req.body = parsedResult.data;
+
       next();
     } catch (e) {
       next(e);
