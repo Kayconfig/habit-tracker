@@ -1,9 +1,9 @@
-import { HttpStatusCode } from 'axios';
 import type { NextFunction, Response } from 'express';
-import type { AuthenticatedRequest } from '../../../interfaces/authenticated-request.interface.ts';
+import { StatusCodes } from 'http-status-codes';
+
+import type { AuthenticatedRequest } from '../../../interfaces/auth/authenticated-request.interface.ts';
 import type { JwtPayload } from '../jwt-payload.schema.ts';
 import { jwtService } from '../jwt-service.ts';
-
 export async function validateJwtToken(
   req: AuthenticatedRequest,
   res: Response,
@@ -12,8 +12,8 @@ export async function validateJwtToken(
   try {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
-      res.status(HttpStatusCode.Unauthorized).json({
-        statusCode: HttpStatusCode.Unauthorized,
+      res.status(StatusCodes.UNAUTHORIZED).json({
+        statusCode: StatusCodes.UNAUTHORIZED,
         message: 'unauthorized',
       });
       return;
@@ -21,8 +21,8 @@ export async function validateJwtToken(
 
     const payload = await jwtService.verify<JwtPayload>(token);
     if (!payload) {
-      res.status(HttpStatusCode.Unauthorized).json({
-        statusCode: HttpStatusCode.Unauthorized,
+      res.status(StatusCodes.UNAUTHORIZED).json({
+        statusCode: StatusCodes.UNAUTHORIZED,
         message: 'unauthorized',
       });
       return;

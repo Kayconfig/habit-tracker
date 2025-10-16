@@ -1,9 +1,11 @@
 import type { Habit, NewHabit } from '../../../db/schema.ts';
 import type { OffsetPagination } from '../../../interfaces/pagination/pagination.interface.ts';
+
 import type { UpdateHabit } from '../../schemas/update-habit.dto.ts';
 
+export type CreateHabitInput = NewHabit & { userId: string; tagsId?: string[] };
 export interface HabitRepository {
-  create(newHabit: NewHabit): Promise<Habit>;
+  create(newHabit: CreateHabitInput): Promise<Habit>;
   update(
     id: string,
     updateHabit: UpdateHabit,

@@ -1,4 +1,3 @@
-import { HttpStatusCode } from 'axios';
 import cors from 'cors';
 import express, {
   type NextFunction,
@@ -6,6 +5,7 @@ import express, {
   type Response,
 } from 'express';
 import helmet from 'helmet';
+import { StatusCodes } from 'http-status-codes';
 import morgan from 'morgan';
 import { isTest } from './env/index.ts';
 import v1Router from './router/v1-router.ts';
@@ -38,7 +38,7 @@ app.use('/api/v1', v1Router);
 
 // unhandled routes
 app.use('/', (req, res) => {
-  const statusCode = HttpStatusCode.NotFound;
+  const statusCode = StatusCodes.NOT_FOUND;
   res.status(statusCode).json({ statusCode, message: 'not found' });
 });
 
@@ -46,8 +46,8 @@ app.use('/', (req, res) => {
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   // log error, you can use sentry
   console.error(err);
-  res.status(HttpStatusCode.InternalServerError).json({
-    statusCode: HttpStatusCode.InternalServerError,
+  res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
     message: 'unable process request, please try again later',
   });
 });

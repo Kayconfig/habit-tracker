@@ -1,5 +1,5 @@
-import { HttpStatusCode } from 'axios';
 import type { Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
 import { UserDto } from '../../user/dtos/user.dto.ts';
 import { UserEmailExistError } from '../../user/errors/user-email-exist.ts';
 import { UsernameExistError } from '../../user/errors/user-name-exist.ts';
@@ -12,7 +12,7 @@ export const authController = {
     try {
       const registerDto = req.body;
       const { user, accessToken } = await authService.register(registerDto);
-      const statusCode = HttpStatusCode.Created;
+      const statusCode = StatusCodes.CREATED;
       res.status(statusCode).json({
         statusCode,
         message: 'user signed up successfully',
@@ -21,7 +21,7 @@ export const authController = {
       return;
     } catch (e) {
       if (e instanceof UserEmailExistError || e instanceof UsernameExistError) {
-        const statusCode = HttpStatusCode.Conflict;
+        const statusCode = StatusCodes.CONFLICT;
         const affectedField =
           e instanceof UserEmailExistError ? 'email' : 'username';
         res.status(statusCode).json({
@@ -40,7 +40,7 @@ export const authController = {
       const loginDto = req.body;
       const { user, accessToken } = await authService.login(loginDto);
 
-      const statusCode = HttpStatusCode.Ok;
+      const statusCode = StatusCodes.OK;
       res.status(statusCode).json({
         statusCode,
         message: 'login successful',
@@ -51,7 +51,7 @@ export const authController = {
         e instanceof PasswordMismatchError ||
         e instanceof UserNotFoundError
       ) {
-        const statusCode = HttpStatusCode.Unauthorized;
+        const statusCode = StatusCodes.UNAUTHORIZED;
         res.status(statusCode).json({
           statusCode,
           message: 'unauthorized: invalid email or password',

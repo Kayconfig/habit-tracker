@@ -1,5 +1,4 @@
 import { env as loadEnv } from 'custom-env';
-import 'dotenv/config';
 import { z } from 'zod';
 import { EnvNotSetError } from './errors/env-not-set.error.ts';
 import { InvalidEnvValueError } from './errors/invalid-env-value.error.ts';

@@ -1,5 +1,5 @@
-import { HttpStatusCode } from 'axios';
 import type { Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
 import type { AuthenticatedRequest } from '../../interfaces/auth/authenticated-request.interface.ts';
 import type { OffsetPagination } from '../../interfaces/pagination/pagination.interface.ts';
 import { HabitNotFoundError } from '../error/habit-not-found.error.ts';
@@ -8,7 +8,6 @@ import type { UpdateHabit } from '../schemas/update-habit.dto.ts';
 import { habitService } from './habit-service.ts';
 import type { HabitController } from './interfaces/habit-controller.interface.ts';
 import type { HabitService } from './interfaces/habit-service.interface.ts';
-
 async function findById(
   req: AuthenticatedRequest,
   res: Response,
@@ -20,14 +19,14 @@ async function findById(
     const habit = await service.findById(habitId, userId);
 
     res.json({
-      statusCode: HttpStatusCode.Ok,
+      statusCode: StatusCodes.OK,
       message: `successful`,
       data: { habit },
     });
     return;
   } catch (e) {
     if (e instanceof HabitNotFoundError) {
-      const statusCode = HttpStatusCode.NotFound;
+      const statusCode = StatusCodes.NOT_FOUND;
       res.status(statusCode).json({
         statusCode,
         message: 'habit not found',
@@ -35,6 +34,7 @@ async function findById(
       });
       return;
     }
+    console.error('habit findById error');
     throw e;
   }
 }
@@ -51,7 +51,7 @@ async function find(
   const habits = await service.find(userId, paginationParams);
 
   res.json({
-    statusCode: HttpStatusCode.Ok,
+    statusCode: StatusCodes.OK,
     message: `successful`,
     data: { habits },
   });
@@ -66,7 +66,7 @@ async function create(
   const body = req.body as CreateHabit;
   const habit = await service.create({ ...body, userId });
   res.json({
-    statusCode: HttpStatusCode.Created,
+    statusCode: StatusCodes.CREATED,
     message: `habit created`,
     data: { habit },
   });
@@ -84,14 +84,14 @@ async function update(
     const habitId = req.params.id;
     const updatedHabit = await service.update(habitId, body, userId);
     res.json({
-      statusCode: HttpStatusCode.Ok,
+      statusCode: StatusCodes.OK,
       message: `updated successful`,
       data: { updatedHabit },
     });
     return;
   } catch (e) {
     if (e instanceof HabitNotFoundError) {
-      const statusCode = HttpStatusCode.NotFound;
+      const statusCode = StatusCodes.NOT_FOUND;
       res.status(statusCode).json({
         statusCode,
         message: 'habit not found',
@@ -113,7 +113,7 @@ async function deleteById(
     const habitId = req.params.id;
     const deletedHabit = await service.deleteById(habitId, userId);
     res.json({
-      statusCode: HttpStatusCode.Ok,
+      statusCode: StatusCodes.OK,
       message: `deleted habit # ${habitId}`,
       data: {
         deletedHabit,
@@ -122,7 +122,7 @@ async function deleteById(
     return;
   } catch (e) {
     if (e instanceof HabitNotFoundError) {
-      const statusCode = HttpStatusCode.NotFound;
+      const statusCode = StatusCodes.NOT_FOUND;
       res.status(statusCode).json({
         statusCode,
         message: 'habit not found',

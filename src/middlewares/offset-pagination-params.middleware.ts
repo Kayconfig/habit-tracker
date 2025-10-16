@@ -1,7 +1,6 @@
-import { HttpStatusCode } from 'axios';
 import type { NextFunction, Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
 import { number as zodNumber, object as zodObject } from 'zod';
-
 const offsetPaginationSchema = zodObject({
   page: zodNumber().positive().gt(0).optional(),
   limit: zodNumber().positive().gt(0).optional(),
@@ -17,7 +16,7 @@ export async function validateOffsetPagination(
       req.params
     );
     if (parsedResult.error) {
-      const statusCode = HttpStatusCode.BadRequest;
+      const statusCode = StatusCodes.BAD_REQUEST;
       const formattedError = parsedResult.error.issues.map((issue) => ({
         field: issue.path.join('.') || 'body',
         message: issue.message,

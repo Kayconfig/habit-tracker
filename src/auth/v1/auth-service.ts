@@ -33,8 +33,6 @@ function createAuthService(
   jwtService: JwtService
 ) {
   return {
-    name: true,
-    speak: () => console.log(),
     async register(registerDto: RegisterDto): Promise<RegisterResponse> {
       registerDto.password = await hashingService.hash(registerDto.password);
       const createdUser = await userService.create(registerDto);
@@ -54,6 +52,7 @@ function createAuthService(
       const accessToken = await generateAccessToken(user, jwtService);
       return { user, accessToken };
     },
+    generateAccessToken,
   };
 }
 
