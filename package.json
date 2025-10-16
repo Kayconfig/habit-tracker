@@ -4,7 +4,7 @@
   "description": "Habit tracking API",
   "scripts": {
     "dev": "node --watch src/server.ts",
-    "start": "node dist/server.ts",
+    "start": "node src/server.ts",
     "test": "cross-env APP_STAGE=test vitest run",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
@@ -55,7 +55,7 @@
     "zod": "^4.1.11"
   },
   "engines": {
-    "node": ">=22.0.0",
+    "node": ">=24.3.0",
     "npm": ">=10.0.0"
   }
 }
